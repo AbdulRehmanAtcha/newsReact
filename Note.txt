@@ -1,0 +1,2 @@
+Please Note:
+In this repo you will only find index.jsx and it's styling file.
