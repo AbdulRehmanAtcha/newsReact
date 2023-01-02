@@ -199,10 +199,9 @@ h3{
     right: 16px;
 
   }
-  @media screen and (min-width: 200px) and (max-width: 900px)
-.head-mid form input[type=text] {
+  .head-mid form input[type=text] {
     margin-left: 12vw;
     font-size: 14px;
     width: 56vw;
-}
+  }
 }
