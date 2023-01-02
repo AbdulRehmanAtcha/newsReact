@@ -1,75 +1,125 @@
-import "./index.css";
-import React from "react";
-import ReactDOM from "react-dom";
-// import Images from "./images/IMG-20221008-WA0006.jpg";
+import axios from 'axios';
+import menu from './icons/more.png';
+import searchIcon from './icons/search-interface-symbol.png';
+import user from './icons/profile-user.png';
+import dots from './icons/menu.png';
+import loader from './icons/loader.gif';
+import { useEffect } from 'react';
+// import moment from 'moment';
 
-function Myheading({ heading }) {
-  return (
-    <h2 className="main-head">{heading}</h2>
-  )
-}
 
-function Post({ author, title, description, image, content }) {
-  return (
-    <div className="myPost">
-      <div className="author">
-        <h2><span>Author: </span>{author}</h2>
-      </div>
-      <div className="title">
-        <h2><span>Title: </span>{title}</h2>
-      </div>
-      <div className="description">
-        <p><span>Description: </span>{description}</p>
-      </div>
-      <div className="image">
-        <img src={image} alt="" />
-      </div>
-      <div className="content">
-        <p><span>Content: </span>{content}</p>
-      </div>
-    </div>
-  )
-}
+import './App.css';
+import { useState } from 'react';
+import moment from 'moment/moment';
 
-function Page() {
+function App() {
+  const [data, setData] = useState([]);
+  const [query, setQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  
+
+
+  useEffect(() => {
+
+    function getTrendingNews() {
+
+      const options = {
+        method: 'GET',
+        url: 'https://bing-news-search1.p.rapidapi.com/news',
+        params: { safeSearch: 'Off', textFormat: 'Raw' },
+        headers: {
+          'X-BingApis-SDK': 'true',
+          'X-RapidAPI-Key': '85KnnuP4HzmshYuCcfjg1sCMFdYkp18e8NojsnQP6hFvDHXrBr',
+          'X-RapidAPI-Host': 'bing-news-search1.p.rapidapi.com'
+        }
+      };
+
+      axios.request(options)
+        .then(function (response) {
+          console.log(response.data);
+
+          setData(response.data.value)
+
+        }).catch(function (error) {
+          console.error(error);
+        });
+    }
+
+    getTrendingNews();
+
+  }, [])
+
+  const fetchNews = (event) => {    document.getElementById("bar").value = "";
+    event.preventDefault()
+    // const axios = require("axios");
+
+    const options = {
+      method: 'GET',
+      url: 'https://bing-news-search1.p.rapidapi.com/news/search',
+      params: { q: query, freshness: 'Day', textFormat: 'Raw', safeSearch: 'Off' },
+      headers: {
+        'X-BingApis-SDK': 'true',
+        'X-RapidAPI-Key': '85KnnuP4HzmshYuCcfjg1sCMFdYkp18e8NojsnQP6hFvDHXrBr',
+        'X-RapidAPI-Host': 'bing-news-search1.p.rapidapi.com'
+      }
+    };
+    setIsLoading(true)
+    axios
+      .request(options)
+      .then(function (response) {
+        setIsLoading(false)
+
+        console.log(response.data.value);
+        setData(response.data.value)
+      })
+      .catch(function (error) {
+        setIsLoading(false)
+
+        console.error(error);
+      });
+  }
   return (
     <body>
-      <Myheading
-        heading="Multiple Components Practice."
-      />
-      <Post
-        author="Jarco Vianen"
-        title="Apple: The Bear Case Is Most Likely"
-        description="Apple has shown great financial performance and its unparalleled ecosystem provides a wide moat. Find out why I'm not buying AAPL stock."
-        image="https://static.seekingalpha.com/cdn/s3/uploads/getty_images/1305769484/image_1305769484.jpg?io=getty-c-w750"
-        content="The investment thesis\r\n I am a big fan of Apple Inc. (NASDAQ:AAPL) as I use many of its products on a daily basis. The iPhone, Mac, Airpods, Watch etc. have become basic necessity"
-      />
-
-      <Post
-        author="Ray Massey"
-        title="Tesla Model Y's new rival: Polestar's £80k 3 SUV unveiled"
-        description="Order books open online from today ahead of first deliveries from next year and go into direct competition with Tesla's Model Y. Here's everything you need to know about the new Polestar 3 SUV."
-        image="https://i.dailymail.co.uk/1s/2022/10/12/15/63388077-0-image-a-99_1665586113612.jpg"
-        content="Performance electric car firm Polestar has launched its first zero-emissions SUV the 3 priced from £79,900 and with a range of up to 379 miles.\r\nFor an extra £5,600 you can have the addition"
-      />
-
-      <Post
-        author="Dan Caplinger"
-        title="Tesla and Netflix Will Make or Break the Nasdaq This Week"
-        description="The tech-heavy benchmark was flying high in early trading Monday, but will it last?"
-        image="https://g.foolcdn.com/editorial/images/705014/tv-watching-gettyimages-200488816-001.jpg"
-        content="Stocks jumped out to a strong start to the new week as investors took some solace from measures taken internationally to calm bond markets in Europe and elsewhere."
-      />
-
-      <Post
-        author="Jack Kelly"
-        title="Is It Hypocritical For CEOs To Hold Multiple Roles While White-Collar Workers Cannot?"
-        description="A CEO of a major global organization with a massive amount of responsibilities is able to take on other money-generating opportunities, whereas it's verboten for regular workers."
-        image="https://imageio.forbes.com/specials-images/imageserve/634d74e85e53ffbcc68e9c70/0x0.jpg?format=jpg&width=1200"
-        content="SpaceX owner and Tesla CEO Elon Musk. Its commonplace for CEOs and C-suite executives to hold many titles, in addition to their primary role."
-      />
+      <div className="header">
+        <div className="head-left">
+          <img src={menu} alt="Hamburger" width="22" height="22" />
+          <h2><span>A</span><span>b</span><span>d</span><span>u</span><span>l</span> News</h2>
+        </div>
+        <div className="head-mid">
+          <form onSubmit={fetchNews}>
+            <input type="text" id='bar' placeholder='Search For Topics,Locations & Sources' onChange={(e) => {
+              setQuery(e.target.value)
+            }} />
+            {/* <input type="submit" value="CLick"/> */}
+            <button type='submit'><img src={searchIcon} alt="" /></button>
+          </form>
+        </div>
+        <div className="head-right">
+          <img src={dots} alt="" height="25" width="25" />
+          <img src={user} alt="" height="25" width="25" />
+        </div>
+      </div>
+      <div className='boxes'>
+        {isLoading? <img src={loader} alt='loader' width='95' height='95'/>:"" }
+        {data.map(eachPost => (
+          <div className="box" key={eachPost.name}>
+            <div className="box-content">
+              <h2><a href={eachPost?.url} target="_blank" title='Click To See Detail News' rel="noreferrer">{eachPost?.name}</a></h2>
+              <p>{moment(eachPost?.datePublished).format('Do MMMM YYYY, h:mm a')
+              }</p>
+              <h3>{eachPost?.description}</h3>
+            </div>
+            <div className="box-image">
+              <img src={eachPost?.image?.thumbnail?.contentUrl.replace("&pid=News", "").replace("pid=News&", "").replace("pid=News", "")
+              } alt="" />
+            </div>
+          </div>
+        ))}
+      </div>
     </body>
+
   );
 }
 
-ReactDOM.render(<Page />, document.querySelector("#root"));
+export default App;
