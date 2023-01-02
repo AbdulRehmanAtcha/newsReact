@@ -159,8 +159,9 @@ h3{
     display: none;
   }
   .head-mid form input[type="text"]{
-    width: 80vw;
+    margin-left: 12vw;
     font-size: 14px;
+    width: 56vw;
   }
   .head-mid{
     width: 100vw;
@@ -199,9 +200,5 @@ h3{
     right: 16px;
 
   }
-  .head-mid form input[type=text] {
-    margin-left: 12vw;
-    font-size: 14px;
-    width: 56vw;
-  }
+
 }
